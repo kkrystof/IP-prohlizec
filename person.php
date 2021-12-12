@@ -1,6 +1,14 @@
 <?php
 require_once("db.php");
 
+$table = (object)[
+    "name" => "Jméno",
+    "surname" => "Příjmení",
+    "job" => "Pozice",
+    "wage" => "Mzda",
+    "room" => "Místost",
+    "keys" => "Klíče"
+];
 
 $personId = filter_input(INPUT_GET, "personId", FILTER_VALIDATE_INT);
 
@@ -18,7 +26,7 @@ $stt->execute([$personId]);
 
 if (!$personId || $st->rowCount() == 0){
     http_response_code(404);
-    include('404.php'); // provide your own HTML for the error page
+    include('404.php');
     die();
 }else {
     $room = $st->fetch();
@@ -26,11 +34,9 @@ if (!$personId || $st->rowCount() == 0){
 
     while ($row = $stt->fetch(PDO::FETCH_OBJ)) {
         array_push($room->keys, $row);
-        // FORMATOVAT ROVNOU TADY - mam tady optom zbytecne nekolik loopu
 
     }
 
-//    var_dump($room);
 }
 ?>
 
@@ -47,22 +53,21 @@ if (!$personId || $st->rowCount() == 0){
 
 <h1>Karta osoby - <?= "$room->surname {$room->name[0]}." ?></h1>
 <dl>
-    <?php     foreach ($room as $key => $value):?>
-    <dt><?= $key ?></dt>
+    <?php     foreach ($table as $key => $value):?>
+    <dt><?= $value ?></dt>
         <?php
-            if(is_array($value)){
-                foreach ($value as $data){
-                    echo "<dd><a href='./room?roomId=$data->room_id'>$data->name</a></dd>";
+            if(is_array($room->$key)){
+                foreach ($room->$key as $data){
+                    echo "<dd><a href='./room.php?roomId=$data->room_id'>$data->name</a></dd>";
                 }
             }else{
-                echo "<dd>". $value . "</dd>";
+                echo "<dd>". $room->$key. "</dd>";
             }
         ?>
     <?php endforeach; ?>
 
 </dl>
 <a href="./people.php" class="back">Zpět na seznam zaměstnanců</a>
-<!--    ◄-->
 </section>
 </body>
 </html>

@@ -67,8 +67,8 @@ if ($st->rowCount() == 0){
             <?php foreach ($table as $key => $column): ?>
             <th>
                 <?= $column ?>
-                <a href="./people?order=<?= $key ?>_up" class="arrow <?= ($active->key == $key & $active->up) ? "active" : "" ?>">🔽</a>
-                <a href="./people?order=<?= $key ?>_down" class="arrow <?= ($active->key == $key & !$active->up) ? "active" : "" ?>">🔼</a>
+                <a href="./people.php?order=<?= $key ?>_up" class="arrow <?= ($active->key == $key & $active->up) ? "active" : "" ?>">🔽</a>
+                <a href="./people.php?order=<?= $key ?>_down" class="arrow <?= ($active->key == $key & !$active->up) ? "active" : "" ?>">🔼</a>
             </th>
             <?php endforeach; ?>
         </tr>
