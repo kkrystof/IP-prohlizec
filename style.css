@@ -1,0 +1,58 @@
+@import "https://cdnjs.cloudflare.com/ajax/libs/mobi.css/3.0.3/mobi.min.css";
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+
+
+html,body{
+    font-family: 'Inter', sans-serif !important;
+}
+section{
+    padding-top: 3rem;
+}
+section{
+    margin: 0 auto;
+}
+
+.arrow{
+ text-decoration: none;
+}
+
+.arrow:hover{
+    text-decoration: none;
+    color: red;
+}
+
+.active {
+    color: red;
+}
+
+.back{
+    display: block;
+    color: black;
+    margin-top: 2rem;
+    padding: 0.2rem 0.5rem;
+    border-radius: 5px;
+    background-color: ghostwhite;
+    text-decoration: none;
+    width: max-content;
+}
+
+.back:hover{
+    background-color: darkgray;
+    text-decoration: none;
+}
+
+
+
+dl {
+    display: grid;
+    grid-template-columns: max-content auto;
+}
+
+dt {
+    grid-column-start: 1;
+}
+
+dd {
+    grid-column-start: 2;
+    margin-left: 2rem;
+}
