@@ -6,7 +6,6 @@ use DevCoder\DotEnv;
 (new DotEnv(__DIR__ . '/dev.env'))->load();
 
 
-
 class DB{
     public static function connect() {
 

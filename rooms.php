@@ -1,111 +1,78 @@
 <?php
+require_once("db.php");
 
-$empl = [];
+
+$data = [];
 $table = (object)[
     "name" => "Název",
     "no" => "Číslo",
     "phone" => "Telefon",
-
 ];
-
 
 $active = (object) [
     "key" => "name",
     "up" => true
 ];
 
-require_once("db.php");
 
-
-//$order = filter_input(INPUT_GET, "order", FILTER_VALIDATE_);
-
-//$query = "select * from employee";
-//$query = "
-//SELECT , Customers.CustomerName, Orders.OrderDate
-//FROM employee
-//INNER JOIN Customers ON Orders.CustomerID=Customers.CustomerID;
-//";
-
-function query($by, $direction){
-    return "SELECT room.*, room.room_id 'id' FROM room ORDE R BY room." . $by . " " . $direction;
-
-}
-
-$pdo = DB::connect();
-
+$query = "SELECT room.*, room.room_id 'id' FROM room ORDER BY room.name";
 $order = $_GET["order"] ?? false;
 
-if($order){
-    $arr = explode("_", $order);
+$pdo = DB::connect();
+$arr = explode("_", $order);
 
-
+if($order && count($arr) == 2){
 
     if(array_key_exists($arr[0], $table) && $arr[1] == "up" || $arr[1] == "down"){
         $active->key = $arr[0];
         $active->up = ($arr[1] === "up") ? true : false;
-        $st = $pdo->prepare(query($arr[0], ($arr[1] === "up") ? "ASC" : "DESC"));
+        $query = "SELECT room.*, room.room_id 'id' FROM room ORDER BY room." . $arr[0] . " " . (($arr[1] === "up") ? "ASC" : "DESC");
     }
 
-}else{
-    $st = $pdo->prepare("SELECT room.*, room.room_id 'id' FROM room ORDER BY room.name");
 }
 
+$st = $pdo->prepare($query);
 $st->execute();
-
-
-
 
 
 if ($st->rowCount() == 0){
     http_response_code(404);
-}else{
-    while ($row = $st->fetch(PDO::FETCH_OBJ)){
-            array_push($empl, $row);
+}else {
+    while ($row = $st->fetch(PDO::FETCH_OBJ)) {
+        array_push($data, $row);
     }
-
-//    var_dump(count($empl));
-
 }
-//var_dump($empl);
 
 ?>
 
 <!doctype html>
-<html lang="en">
+<html lang="cs">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="style.css">
-    <title>Document</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png">
+    <title>Seznam místností</title>
 </head>
 <body>
 <section class="container">
 
-
-
-    <div class="scroll-view">
+    <h1>Seznam místností</h1>
     <table class="table">
         <thead>
         <tr>
             <?php foreach ($table as $key => $column): ?>
             <th>
                 <?= $column ?>
-<!--                <img src="https://unpkg.com/lucide-static@latest/icons/arrow-down-circle.svg">-->
-<!--                🡹⮟-->
                 <a href="./rooms?order=<?= $key ?>_up" class="arrow <?= ($active->key == $key & $active->up) ? "active" : "" ?>">🔽</a>
                 <a href="./rooms?order=<?= $key ?>_down" class="arrow <?= ($active->key == $key & !$active->up) ? "active" : "" ?>">🔼</a>
-<!--                <img style="border-color: red" src="https://unpkg.com/lucide-static@latest/icons/arrow-up-circle.svg">-->
             </th>
             <?php endforeach; ?>
         </tr>
         </thead>
         <tbody>
-        <?php foreach ($empl as $row): ?>
+        <?php foreach ($data as $row): ?>
             <tr>
                 <?php foreach ($table as $key => $column): ?>
-
                     <td><?= ($key === "name") ? "<a href='./room.php?roomId=$row->id'>".$row->$key."</a>" : $row->$key ?></td>
                 <?php endforeach; ?>
 
@@ -113,9 +80,7 @@ if ($st->rowCount() == 0){
         <?php endforeach; ?>
         </tbody>
     </table>
-</div>
 
 </section>
-
 </body>
 </html>

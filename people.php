@@ -1,97 +1,89 @@
 <?php
-
 require_once("db.php");
 
-//$roomId = $_GET["room_id"];
-//$roomId = filter_input(INPUT_GET, "room_id", FILTER_VALIDATE_INT);
+$data = [];
+$table = (object)[
+    "name" => "Jméno",
+    "room" => "Místnost",
+    "phone" => "Telefon",
+    "job" => "Pozice"
+];
 
-//$query = "select * from employee";
-//$query = "
-//SELECT , Customers.CustomerName, Orders.OrderDate
-//FROM employee
-//INNER JOIN Customers ON Orders.CustomerID=Customers.CustomerID;
-//";
+$active = (object) [
+    "key" => "name",
+    "up" => true
+];
+
+
+
 
 $query = "SELECT e.employee_id 'id', CONCAT(e.surname, ' ', e.name) 'name', room.name 'room', room.phone, e.job FROM employee e INNER JOIN room ON e.room = room.room_id ORDER BY e.surname";
 
-
-
+$order = $_GET["order"] ?? false;
 
 $pdo = DB::connect();
+$arr = explode("_", $order);
+
+if($order && count($arr) == 2){
+
+    if(array_key_exists($arr[0], $table) && $arr[1] == "up" || $arr[1] == "down"){
+        $active->key = $arr[0];
+        $active->up = ($arr[1] === "up") ? true : false;
+        $query = "SELECT e.employee_id 'id', CONCAT(e.surname, ' ', e.name) 'name', room.name 'room', room.phone, e.job FROM employee e INNER JOIN room ON e.room = room.room_id ORDER BY e." . $arr[0] . " " . (($arr[1] === "up") ? "ASC" : "DESC");
+
+    }
+
+}
+
 $st = $pdo->prepare($query);
 $st->execute();
-
-
-$empl = [];
-$table = (object)[
-        "name" => "Jméno",
-        "room" => "Místnost",
-        "phone" => "Telefon",
-        "job" => "Pozice"
-];
-
 
 if ($st->rowCount() == 0){
     http_response_code(404);
 }else{
     while ($row = $st->fetch(PDO::FETCH_OBJ)){
-            array_push($empl, $row);
+        array_push($data, $row);
     }
 
-//    var_dump(count($empl));
-
 }
-//var_dump($empl);
+
 
 ?>
 
 <!doctype html>
-<html lang="en">
+<html lang="cs">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="style.css">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png">
-    <title>Document</title>
+    <title>Seznam zaměstnanců</title>
 </head>
 <body>
 <section class="container">
-
-
-
-    <div class="scroll-view">
+    <h1>Seznam zaměstnanců</h1>
     <table class="table">
         <thead>
         <tr>
             <?php foreach ($table as $key => $column): ?>
             <th>
                 <?= $column ?>
-<!--                <img src="https://unpkg.com/lucide-static@latest/icons/arrow-down-circle.svg">-->
-<!--                🡹⮟-->
-                <a href="./lide?poradi=<?= $key ?>_up" class="arrow active">🔼</a>
-                <a href="./lide?poradi=<?= $key ?>_down" class="arrow">🔽</a>
-<!--                <img style="border-color: red" src="https://unpkg.com/lucide-static@latest/icons/arrow-up-circle.svg">-->
+                <a href="./people?order=<?= $key ?>_up" class="arrow <?= ($active->key == $key & $active->up) ? "active" : "" ?>">🔽</a>
+                <a href="./people?order=<?= $key ?>_down" class="arrow <?= ($active->key == $key & !$active->up) ? "active" : "" ?>">🔼</a>
             </th>
             <?php endforeach; ?>
         </tr>
         </thead>
         <tbody>
-        <?php foreach ($empl as $row): ?>
-            <tr>
-                <?php foreach ($table as $key => $column): ?>
-
-                    <td><?= ($key === "name") ? "<a href='./person.php?personId=$row->id'>".$row->$key."</a>" : $row->$key ?></td>
-                <?php endforeach; ?>
-
-            </tr>
-        <?php endforeach; ?>
+            <?php foreach ($data as $row): ?>
+                <tr>
+                    <?php foreach ($table as $key => $column): ?>
+                        <td><?= ($key === "name") ? "<a href='./person.php?personId=$row->id'>".$row->$key."</a>" : $row->$key ?></td>
+                    <?php endforeach; ?>
+                </tr>
+            <?php endforeach; ?>
         </tbody>
     </table>
-</div>
 
 </section>
-
 </body>
 </html>

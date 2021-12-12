@@ -2,8 +2,6 @@
 require_once("db.php");
 
 
-
-
 $personId = filter_input(INPUT_GET, "personId", FILTER_VALIDATE_INT);
 
 $emplQuery = "select e.*, room.name 'room' from employee e INNER JOIN room ON e.room = room.room_id WHERE e.employee_id=?;";
@@ -40,11 +38,9 @@ if (!$personId || $st->rowCount() == 0){
 <html lang="cs">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="style.css">
-    <title>Document</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png">
+    <title>Karta osoby <?= "$room->surname {$room->name[0]}." ?></title>
 </head>
 <body>
 <section class="container">
