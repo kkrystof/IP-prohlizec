@@ -29,7 +29,7 @@ if($order && count($arr) == 2){
     if(array_key_exists($arr[0], $table) && $arr[1] == "up" || $arr[1] == "down"){
         $active->key = $arr[0];
         $active->up = ($arr[1] === "up") ? true : false;
-        $query = "SELECT e.employee_id 'id', CONCAT(e.surname, ' ', e.name) 'name', room.name 'room', room.phone, e.job FROM employee e INNER JOIN room ON e.room = room.room_id ORDER BY" . ($arr[0] == 'phone') ? 'room.' : 'e.' . $arr[0] . " " . (($arr[1] === "up") ? "ASC" : "DESC");
+        $query = "SELECT e.employee_id 'id', CONCAT(e.surname, ' ', e.name) 'name', room.name 'room', room.phone, e.job FROM employee e INNER JOIN room ON e.room = room.room_id ORDER BY " . (($arr[0] == 'phone') ? 'room.' : 'e.') . $arr[0] . " " . (($arr[1] === "up") ? "ASC" : "DESC");
 
     }
 
