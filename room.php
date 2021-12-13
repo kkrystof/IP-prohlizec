@@ -64,7 +64,7 @@ if (!$roomId || $st->rowCount() == 0){
     <meta charset="UTF-8">
     <link rel="stylesheet" href="style.css">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png">
-    <title></title>
+    <title>Karta místnosti č. <?= $room->no ?></title>
 </head>
 <body>
 <section class="container">
