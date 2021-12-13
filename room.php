@@ -84,7 +84,7 @@ if (!$roomId || $st->rowCount() == 0){
         <?php endforeach; ?>
 
     </dl>
-    <a href="./people.php" class="back">Zpět na seznam zaměstnanců</a>
+    <a href="./rooms.php" class="back">Zpět na seznam místností</a>
 </section>
 </body>
 </html>
