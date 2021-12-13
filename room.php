@@ -51,9 +51,10 @@ if (!$roomId || $st->rowCount() == 0){
     }
 
     $room->avg_salary = ($room->avg_salary !== 0) ? ($room->avg_salary / count($room->people)) : "—";
-    empty($room->people) ?? "-";
-//var_dump(count($room->keys));
-//    var_dump($room);
+
+    $room->people = $room->people ?: "—";
+    $room->keys = $room->keys ?: "—";
+
 }
 ?>
 

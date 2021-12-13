@@ -29,13 +29,15 @@ if (!$personId || $st->rowCount() == 0){
     include('404.php');
     die();
 }else {
-    $room = $st->fetch();
-    $room->keys = [];
+    $person = $st->fetch();
+    $person->keys = [];
 
     while ($row = $stt->fetch(PDO::FETCH_OBJ)) {
-        array_push($room->keys, $row);
+        array_push($person->keys, $row);
 
     }
+
+    $person->keys = $person->keys ?: "—";
 
 }
 ?>
@@ -46,22 +48,22 @@ if (!$personId || $st->rowCount() == 0){
     <meta charset="UTF-8">
     <link rel="stylesheet" href="style.css">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png">
-    <title>Karta osoby <?= "$room->surname {$room->name[0]}." ?></title>
+    <title>Karta osoby <?= "$person->surname {$person->name[0]}." ?></title>
 </head>
 <body>
 <section class="container">
 
-<h1>Karta osoby - <?= "$room->surname {$room->name[0]}." ?></h1>
+<h1>Karta osoby - <?= "$person->surname {$person->name[0]}." ?></h1>
 <dl>
     <?php     foreach ($table as $key => $value):?>
     <dt><?= $value ?></dt>
         <?php
-            if(is_array($room->$key)){
-                foreach ($room->$key as $data){
+            if(is_array($person->$key)){
+                foreach ($person->$key as $data){
                     echo "<dd><a href='./room.php?roomId=$data->room_id'>$data->name</a></dd>";
                 }
             }else{
-                echo "<dd>". $room->$key. "</dd>";
+                echo "<dd>". $person->$key. "</dd>";
             }
         ?>
     <?php endforeach; ?>
